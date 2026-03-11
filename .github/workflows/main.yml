@@ -1,0 +1,30 @@
+name: Daily Stock Data Scraper
+
+on:
+  schedule:
+    - cron: '30 13 * * *'  # 每天固定觸發 (例如每天晚上 9:30)
+  workflow_dispatch:      # 允許手動觸發 (作業必備要求)
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: pip install requests
+        
+      - name: Execute Scraper
+        run: python api.py
+        
+      - name: Upload Output JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-stock-result
+          path: stock_data.json
